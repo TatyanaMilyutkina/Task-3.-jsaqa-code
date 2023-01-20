@@ -1,22 +1,40 @@
-const { test, expect } = require("@playwright/test");
+const { test, expect, chromium } = require("@playwright/test");
+const { user } = require("../user");
 
-test("test", async ({ page }) => {
-  // Go to https://netology.ru/free/management#/
-  await page.goto("https://netology.ru/free/management#/");
-
-  // Click a
-  await page.click("a");
-  await expect(page).toHaveURL("https://netology.ru/");
-
-  // Click text=Учиться бесплатно
-  await page.click("text=Учиться бесплатно");
-  await expect(page).toHaveURL("https://netology.ru/free");
-
-  page.click("text=Бизнес и управление");
-
-  // Click text=Как перенести своё дело в онлайн
-  await page.click("text=Как перенести своё дело в онлайн");
-  await expect(page).toHaveURL(
-    "https://netology.ru/programs/kak-perenesti-svoyo-delo-v-onlajn-bp"
-  );
+test("positive",async () => {
+  const browser = await chromium.launch({
+    headless: false,
+    slowMo: 300
+  });
+  const page = await browser.newPage();
+  await page.goto("https://netology.ru/?modal=sign_in");
+  await page.locator('[placeholder="Email"]').click();
+  await page.locator('[placeholder="Email"]').fill(user.email);
+  await page.locator('[placeholder="Пароль"]').click();
+  await page.locator('[placeholder="Пароль"]').fill(user.password);
+  await page.locator('[data-testid="login-submit-btn"]').click();
+  await page.waitForURL("https://netology.ru/profile");
+  await page.screenshot({ path: "screenshot.png" });
+  const header = await page.locator("h2").first();
+  await expect(header).toHaveText("Мои курсы и профессии");
+  await browser.close();
 });
+
+test("negative",async () => {
+  const browser = await chromium.launch({
+    headless: false,
+    slowMo: 300
+  });
+  const page = await browser.newPage();
+  await page.goto("https://netology.ru/?modal=sign_in");
+  await page.locator('[placeholder="Email"]').click();
+  await page.locator('[placeholder="Email"]').fill("123@mail.ru");
+  await page.locator('[placeholder="Пароль"]').click();
+  await page.locator('[placeholder="Пароль"]').fill("123");
+  await page.locator('[data-testid="login-submit-btn"]').click();
+  await expect(page.locator("data-testid=login-error-hint")).toContainText(
+    "Вы ввели неправильно логин или пароль"
+  );
+  await page.screenshot({ path: "screenshotError.png" });
+  await browser.close();
+})

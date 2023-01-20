@@ -1,6 +1,5 @@
 /node_modules/
 
-
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
@@ -10,3 +9,17 @@
 
 # Local History for Visual Studio Code
 .history/
+/test-results/
+/playwright-report/
+/playwright/.cache/
+
+user.js
+/test-results/
+/e2e/
+/playwright-report/
+/playwright/.cache/
+/tests-examples/
+/node_modules/
+package-lock.json
+screenshot.png
+screenshotError.png
