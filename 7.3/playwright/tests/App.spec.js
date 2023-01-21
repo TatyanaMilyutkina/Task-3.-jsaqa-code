@@ -1,7 +1,7 @@
 const { test, expect, chromium } = require("@playwright/test");
 const { user } = require("../user");
 
-test("positive",async () => {
+test("positive",async ( {page}) => {
   const browser = await chromium.launch({
     headless: false,
     slowMo: 300
@@ -20,7 +20,7 @@ test("positive",async () => {
   await browser.close();
 });
 
-test("negative",async () => {
+test("negative",async ({page}) => {
   const browser = await chromium.launch({
     headless: false,
     slowMo: 300
